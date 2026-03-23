@@ -11,6 +11,7 @@ const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [nome, setNome] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -24,12 +25,30 @@ const Auth = () => {
         if (error) throw error;
         toast.success('Login realizado com sucesso!');
       } else {
-        const { error } = await supabase.auth.signUp({
+        // Signup
+        const { data: authData, error: authError } = await supabase.auth.signUp({
           email,
           password,
           options: { emailRedirectTo: window.location.origin },
         });
-        if (error) throw error;
+        if (authError) throw authError;
+
+        // Salvar dados na tabela usuarios
+        if (authData.user) {
+          const { error: dbError } = await supabase
+            .from('usuarios')
+            .insert([
+              {
+                id: authData.user.id,
+                email: email,
+                nome: nome || email.split('@')[0],
+                role: 'vendedor'
+              }
+            ]);
+
+          if (dbError) throw dbError;
+        }
+
         toast.success('Cadastro realizado! Verifique seu e-mail para confirmar.');
       }
     } catch (error: any) {
@@ -68,6 +87,20 @@ const Auth = () => {
 
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4">
+              {!isLogin && (
+                <div className="space-y-2">
+                  <Label htmlFor="nome">Nome Completo</Label>
+                  <Input
+                    id="nome"
+                    type="text"
+                    placeholder="Seu nome completo"
+                    value={nome}
+                    onChange={(e) => setNome(e.target.value)}
+                    required
+                  />
+                </div>
+              )}
+
               <div className="space-y-2">
                 <Label htmlFor="email">E-mail</Label>
                 <div className="relative">
