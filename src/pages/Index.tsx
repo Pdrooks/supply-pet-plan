@@ -20,6 +20,7 @@ const Index = () => {
     addProduct, updateProduct, deleteProduct, addMovement,
   } = useInventory();
 
+  const { signOut } = useAuth();
   const [productDialogOpen, setProductDialogOpen] = useState(false);
   const [movementDialogOpen, setMovementDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
