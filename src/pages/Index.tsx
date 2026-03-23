@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Search, Plus, PawPrint, Filter } from 'lucide-react';
+import { Search, Plus, PawPrint, Filter, LogOut } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 import { useInventory } from '@/hooks/useInventory';
 import { Product, CATEGORY_LABELS, ProductCategory } from '@/types/inventory';
 import { StatsCards } from '@/components/inventory/StatsCards';
