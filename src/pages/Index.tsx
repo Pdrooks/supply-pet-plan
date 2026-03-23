@@ -55,10 +55,15 @@ const Index = () => {
               <p className="text-xs text-muted-foreground">Controle de Estoque</p>
             </div>
           </div>
-          <Button onClick={handleNewProduct} className="gap-2 shadow-sm">
-            <Plus className="h-4 w-4" />
-            Novo Produto
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button onClick={handleNewProduct} className="gap-2 shadow-sm">
+              <Plus className="h-4 w-4" />
+              Novo Produto
+            </Button>
+            <Button variant="ghost" size="icon" onClick={signOut} title="Sair">
+              <LogOut className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </header>
 
