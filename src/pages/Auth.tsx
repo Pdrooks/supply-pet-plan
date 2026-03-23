@@ -8,49 +8,22 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { toast } from 'sonner';
 
 const Auth = () => {
-  const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [nome, setNome] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Evitar múltiplos cliques
+    if (loading) return;
     setLoading(true);
 
     try {
-      if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        toast.success('Login realizado com sucesso!');
-      } else {
-        // Signup
-        const { data: authData, error: authError } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { emailRedirectTo: window.location.origin },
-        });
-        if (authError) throw authError;
-
-        // Salvar dados na tabela usuarios
-        if (authData.user) {
-          const { error: dbError } = await supabase
-            .from('usuarios')
-            .insert([
-              {
-                id: authData.user.id,
-                email: email,
-                nome: nome || email.split('@')[0],
-                role: 'vendedor'
-              }
-            ]);
-
-          if (dbError) throw dbError;
-        }
-
-        toast.success('Cadastro realizado! Verifique seu e-mail para confirmar.');
-      }
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      toast.success('Login realizado com sucesso!');
     } catch (error: any) {
       toast.error(error.message || 'Erro ao processar solicitação');
     } finally {
@@ -75,32 +48,14 @@ const Auth = () => {
         {/* Card */}
         <Card className="shadow-xl border-border/60">
           <CardHeader className="text-center pb-4">
-            <CardTitle className="text-xl">
-              {isLogin ? 'Entrar na conta' : 'Criar conta'}
-            </CardTitle>
+            <CardTitle className="text-xl">Entrar na conta</CardTitle>
             <CardDescription>
-              {isLogin
-                ? 'Use seu e-mail e senha para acessar'
-                : 'Preencha os dados para se cadastrar'}
+              Use seu e-mail e senha para acessar
             </CardDescription>
           </CardHeader>
 
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4">
-              {!isLogin && (
-                <div className="space-y-2">
-                  <Label htmlFor="nome">Nome Completo</Label>
-                  <Input
-                    id="nome"
-                    type="text"
-                    placeholder="Seu nome completo"
-                    value={nome}
-                    onChange={(e) => setNome(e.target.value)}
-                    required
-                  />
-                </div>
-              )}
-
               <div className="space-y-2">
                 <Label htmlFor="email">E-mail</Label>
                 <div className="relative">
@@ -145,19 +100,8 @@ const Auth = () => {
             <CardFooter className="flex flex-col gap-4">
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-                {isLogin ? 'Entrar' : 'Criar conta'}
+                Entrar
               </Button>
-
-              <p className="text-sm text-muted-foreground text-center">
-                {isLogin ? 'Não tem conta?' : 'Já tem conta?'}{' '}
-                <button
-                  type="button"
-                  onClick={() => setIsLogin(!isLogin)}
-                  className="text-primary font-medium hover:underline"
-                >
-                  {isLogin ? 'Cadastre-se' : 'Faça login'}
-                </button>
-              </p>
             </CardFooter>
           </form>
         </Card>
