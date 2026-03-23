@@ -12,8 +12,25 @@ export default {
         "2xl": "1400px",
       },
     },
+    fontFamily: {
+      sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+    },
     extend: {
       colors: {
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        column: {
+          backlog: "hsl(var(--column-backlog))",
+          progress: "hsl(var(--column-progress))",
+          review: "hsl(var(--column-review))",
+          done: "hsl(var(--column-done))",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
